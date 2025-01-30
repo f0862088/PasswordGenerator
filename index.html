@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>パスワード作成ツール</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>パスワード作成ツール</h1>
+  <h2>8文字～24文字まで、100個まで作成可能</h2>
+  <div class="container">
+    <div class="head"><p>文字数</p></div>
+    <div class="data">
+      <input id="number" type="number" value="8" min="8" max="24">
+      <p>文字</p>
+    </div>
+  </div>
+  <div class="container">
+    <div class="head"><p>文字</p></div>
+    <div class="data">
+      <div class="option">
+        <input id="lowers-checkbox" type="checkbox" checked>
+        <p>英小文字</p>  
+      </div>
+      <div class="option">
+        <input id="capitals-checkbox" type="checkbox" checked>
+        <p>英大文字</p>  
+      </div>
+      <div class="option">
+        <input id="numbers-checkbox" type="checkbox" checked>
+        <p>数字</p>  
+      </div>
+      <div class="symbol">
+        <input id="no-symbol" type="radio" name="symbol" value="no-symbol" checked>
+        <p>記号なし</p>  
+      </div>
+      <div class="symbol">
+        <input id="get-symbol" type="radio" name="symbol" value="get-symbol">
+        <p>記号あり</p>  
+      </div>
+      <div id="symbols"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="head"><p>個数</p></div>
+    <div class="data">
+      <input id="count" type="number" value="10" min="1" max="10">
+      <p>個</p>
+    </div>
+  </div>
+  <div class="btns">
+    <div id="making">作成</div>
+    <div id="reset">リセット</div>
+  </div>
+  <div id="passwords"></div> 
+
+  <script src="js/main.js"></script>
+</body>
+</html>
