@@ -14,10 +14,13 @@ h2 {
   margin: 8px 0 0;
 }
 
-.container {
-  display: flex;
+main {
   width: 320px;
   margin: 0 auto;
+}
+
+.block {
+  display: flex;
   margin-top: 6px;
 }
 
@@ -54,9 +57,7 @@ h2 {
 .btns {
   display: flex;
   justify-content: space-between;
-  width: 320px;
-  margin: 0 auto;
-  margin-top: 8px;
+  margin: 8px auto 8px;
 }
 
 #making {
@@ -73,11 +74,13 @@ h2 {
   user-select: none;
 }
 
-#making:hover {
+#making:hover,
+#reset:hover {
   opacity: .6;
 }
 
-#making:active {
+#making:active,
+#reset:active {
   opacity: .4;
 }
 
@@ -95,18 +98,10 @@ h2 {
   user-select: none;
 }
 
-#reset:hover {
-  opacity: .6;
-}
-
-#reset:active {
-  opacity: .4;
-}
-
 #passwords {
   display: flex;
   width: 320px;
-  margin: 16px auto;
+  margin: 12px auto;
   flex-wrap: wrap;
   border: 2px solid #aaa;
   box-sizing: border-box;
