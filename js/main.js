@@ -23,165 +23,222 @@
     numbers,
    ];
 
-  //チェック項目
-  const number = document.getElementById('number');
-  const lowersCheckbox = document.getElementById('lowers-checkbox');
-  const capitalsCheckbox = document.getElementById('capitals-checkbox');
-  const numbersCheckbox = document.getElementById('numbers-checkbox');
-  const noSymbol = document.getElementById('no-symbol');
-  const getSymbol = document.getElementById('get-symbol');
-  const count = document.getElementById('count');
+  // ページの表示
+  class viewSet {
+    constructor() {
+      this.number = document.getElementById('number');
+      this.lowersCheckbox = document.getElementById('lowers-checkbox');
+      this.capitalsCheckbox = document.getElementById('capitals-checkbox');
+      this.numbersCheckbox = document.getElementById('numbers-checkbox');
+      this.noSymbol = document.getElementById('no-symbol');
+      this.getSymbol = document.getElementById('get-symbol');
+      this.count = document.getElementById('count');
 
-  // 記号なしの表示
-  function notSlectSymbol() {
-    const symbols = document.getElementById('symbols');
-    while (symbols.firstChild) {
-      symbols.removeChild(symbols.firstChild);
-    }
-  }
+      this.resetPage();
 
-  // 選択肢の初期化
-  function resetPage() {
-    number.value = 8;
-    lowersCheckbox.checked = true;
-    capitalsCheckbox.checked = true;
-    numbersCheckbox.checked = true;
-    noSymbol.checked = true;
-    count.value = 10;
-    notSlectSymbol();
-  }
-  
-  // チェック項目の確認
-  function checkCheckbox() {
-    const resultCheckbox = [];
-    resultCheckbox.push(lowersCheckbox.checked);
-    resultCheckbox.push(capitalsCheckbox.checked);
-    resultCheckbox.push(numbersCheckbox.checked);
-    resultCheckbox.push(getSymbol.checked);
-    return resultCheckbox;
-  }
+      this.info = new makingPassword(this);
+      this.showPasswords();
 
-  // 選択された記号配列の作成
-  function makeSymbolsbox() {
-    let symbolBox = [];
-    let product = '';
-    let symbolNumber = 0;
-    const symbolBoxes = document.querySelectorAll('.symbol-checkbox');
-    symbolBoxes.forEach((box) => {
-      if (box.checked) {
-        symbolBox.push(symbolsVariety[symbolNumber][0]);
-      }
-      symbolNumber++;
-    });
-
-    for (let i = 0; i < symbolBox.length; i++) {
-      product += symbolBox[i];
-    }
-    return product;
-  }
-
-  // パスワード生成用配列の作成
-  function makeLetters(results) {
-    let Letters = [];
-    let i = 0;
-    results.forEach((result) => {
-      if (result === true) {
-        if (i === 3) {
-          Letters.push(makeSymbolsbox());
+      // 作成ボタンのイベントリスナー
+      const making = document.getElementById('making');
+      making.addEventListener('click', () => {
+        if (!this.lowersCheckbox.checked && (!this.capitalsCheckbox.checked && !this.numbersCheckbox.checked) ) {
+          alert('英小文字、英大文字、数字のいずれかにチェックを入れてください')
+          this.resetPage();
+        } else if (this.number.value > 24 || this.number.value < 8) {
+          alert('文字数は８～２４文字を指定してください');
+          this.resetPage();
+        } else if (this.count.value > 100) {
+          alert('作成できるパスワードは最大100個です')
+          this.resetPage();
         } else {
-          Letters.push(preLetters[i]);
+          this.showPasswords();
         }
+      });
+
+      // リセットボタンのイベントリスナー
+      const reset = document.getElementById('reset');
+      reset.addEventListener('click', () => {
+        this.resetPage();
+        this.showPasswords();
+      });
+
+      // 記号なしラジオボタンのイベントリスナー
+      this.noSymbol.addEventListener('change', () => {
+        this.notSlectSymbol();
+      });
+
+      // 記号ありラジオボタンのイベントリスナー
+      this.getSymbol.addEventListener('change', () => {
+        this.getSelectSymbol()
+      });
+
+    }
+
+    // チェックボックスの初期化
+    resetPage() {
+      this.number.value = 8;
+      this.lowersCheckbox.checked = true;
+      this.capitalsCheckbox.checked = true;
+      this.numbersCheckbox.checked = true;
+      this.noSymbol.checked = true;
+      this.count.value = 10;
+      this.notSlectSymbol();
+    }
+
+    // 記号なしの表示
+    notSlectSymbol() {
+      const symbols = document.getElementById('symbols');
+      while (symbols.firstChild) {
+        symbols.removeChild(symbols.firstChild);
       }
-      i+=1;
-    });
-    return Letters;
+    }
+
+    // 記号ありの表示
+    getSelectSymbol() {
+      this.notSlectSymbol();
+
+      for (let i = 0; i < symbolsVariety.length; i++) {
+        const symbolOption = document.createElement('div');
+        symbolOption.classList.add('symbol-option');
+        const symbolCheckbox = document.createElement('input');
+        symbolCheckbox.type = "checkbox";
+        symbolCheckbox.classList.add('symbol-checkbox');
+        symbolCheckbox.checked = true;
+        const p = document.createElement('p');
+        p.textContent = symbolsVariety[i][1];
+    
+        symbols.appendChild(symbolOption);
+        symbolOption.appendChild(symbolCheckbox);
+        symbolOption.appendChild(p);
+      }
+    }
+
+    // パスワードの表示
+    showPasswords() {
+      const passwords = document.getElementById('passwords');
+      while (passwords.firstChild) {
+        passwords.removeChild(passwords.firstChild);
+      }
+  
+      const pwArray = this.info.makePasswordArray();    
+      for (let i = 0; i < this.count.value; i++) {
+        const password = document.createElement('div');
+        const passwordWidth = 12 * this.number.value;
+        password.style.width = `${passwordWidth}px`;
+        password.textContent = pwArray[i];
+        passwords.appendChild(password);
+      }
+    }
+
+    getNumber() {
+      return this.number;
+    }
+
+    getLowersCheckbox() {
+      return this.lowersCheckbox;
+    }
+
+    getCapitalsCheckbox() {
+      return this.capitalsCheckbox;
+    }
+
+    getNumbersCheckbox() {
+      return this.numbersCheckbox;
+    }
+
+    getGetSymbol() {
+      return this.getSymbol;
+    }
+
+    getCount() {
+      return this.count;
+    }
   }
 
   // パスワードの作成
-  function makePassword(words) {
-    let Words = [...words];
-    let temporary = '';
-    let choice = '';
+  class makingPassword {
+    constructor(info) {
+      this.info = info;
 
-    for (let i = 0; i < number.value; i++) {
-      if (Words.length === 0) {
-        Words = [...words];
-      }
-      temporary = Words.splice(Math.floor(Math.random() * Words.length), 1)[0];
-      choice += temporary[Math.floor(Math.random() * temporary.length)];
-    }
-    return choice;
-  }
-
-  // パスワードの表示
-  function showPassword() {
-    const passwords = document.getElementById('passwords');
-    while (passwords.firstChild) {
-      passwords.removeChild(passwords.firstChild);
+      // this.showPassword();
+      this.makePasswordArray();
     }
 
-    for (let i = 0; i < count.value; i++) {
-      const resultCheckbox = checkCheckbox();
-      const makedLetters = makeLetters(resultCheckbox);
-      const password = document.createElement('div');
-      const passwordWidth = 12 * number.value;
-      password.style.width = `${passwordWidth}px`;
-      password.textContent = makePassword(makedLetters);
-      passwords.appendChild(password);
-    }
-  }
-
-  // 記号なし・ありラジオボタンのイベントリスナー
-  noSymbol.addEventListener('change', () => {
-    notSlectSymbol();
-  });
-
-  getSymbol.addEventListener('change', () => {
-    const symbols = document.getElementById('symbols');
-
-    while (symbols.firstChild) {
-      symbols.removeChild(symbols.firstChild);
+    // チェック項目の確認
+    checkCheckbox() {
+      const resultCheckbox = [];
+      resultCheckbox.push(this.info.getLowersCheckbox().checked);
+      resultCheckbox.push(this.info.getCapitalsCheckbox().checked);
+      resultCheckbox.push(this.info.getNumbersCheckbox().checked);
+      resultCheckbox.push(this.info.getGetSymbol().checked);
+      return resultCheckbox;
     }
 
-    for (let i = 0; i < symbolsVariety.length; i++) {
-      const symbolOption = document.createElement('div');
-      symbolOption.classList.add('symbol-option');
-      const symbolCheckbox = document.createElement('input');
-      symbolCheckbox.type = "checkbox";
-      symbolCheckbox.classList.add('symbol-checkbox');
-      symbolCheckbox.checked = true;
-      const p = document.createElement('p');
-      p.textContent = symbolsVariety[i][1];
+    // 選択された記号配列の作成
+    makeSymbolsbox() {
+      let symbolBox = [];
+      let product = '';
+      let symbolNumber = 0;
+      const symbolBoxes = document.querySelectorAll('.symbol-checkbox');
+      symbolBoxes.forEach((box) => {
+        if (box.checked) {
+          symbolBox.push(symbolsVariety[symbolNumber][0]);
+        }
+        symbolNumber++;
+      });
   
-      symbols.appendChild(symbolOption);
-      symbolOption.appendChild(symbolCheckbox);
-      symbolOption.appendChild(p);
+      for (let i = 0; i < symbolBox.length; i++) {
+        product += symbolBox[i];
+      }
+      return product;
     }
-  });
 
-  // 作成ボタンのイベントリスナー
-  const making = document.getElementById('making');
-  making.addEventListener('click', () => {
-    if (!lowersCheckbox.checked && (!capitalsCheckbox.checked && !numbersCheckbox.checked) ) {
-      alert('英小文字、英大文字、数字のいずれかにチェックを入れてください')
-      resetPage();
-    } else if (number.value > 24 || number.value < 8) {
-      alert('文字数は８～２４文字を指定してください');
-      resetPage();
-    } else if (count.value > 100) {
-      alert('作成できるパスワードは最大100個です')
-      resetPage();
-    } else {
-      showPassword()
+    // パスワード生成用配列の作成
+    makeLetters(resultCheckbox) {
+      let Letters = [];
+      let i = 0;
+      resultCheckbox.forEach((result) => {
+        if (result === true) {
+          if (i === 3) {
+            Letters.push(this.makeSymbolsbox());
+          } else {
+            Letters.push(preLetters[i]);
+          }
+        }
+        i+=1;
+      });
+      return Letters;
     }
-  });
 
-  // リセットボタンのイベントリスナー
-  const reset = document.getElementById('reset');
-  reset.addEventListener('click', () => {
-    resetPage();
-    showPassword();
-  });
+    // パスワードの作成
+    makePassword(makedLetters) {
+      let Words = [...makedLetters];
+      let temporary = '';
+      let choice = '';
+  
+      for (let i = 0; i < this.info.getNumber().value; i++) {
+        if (Words.length === 0) {
+          Words = [...makedLetters];
+        }
+        temporary = Words.splice(Math.floor(Math.random() * Words.length), 1)[0];
+        choice += temporary[Math.floor(Math.random() * temporary.length)];
+      }
+      return choice;
+    }
 
-  showPassword();
+    // パスワードを配列に格納
+    makePasswordArray() {
+      const pwArray = [];
+      for  (let i = 0; i < this.info.getCount().value; i++) {
+        const resultCheckbox = this.checkCheckbox();
+        const makedLetters = this.makeLetters(resultCheckbox);
+        const onePassword = this.makePassword(makedLetters);
+        pwArray.push(onePassword);
+      }
+      return pwArray;
+    }
+  }
+
+  new viewSet();
 }
